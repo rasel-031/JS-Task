@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./index.css" />
+    <script src="./index.js"></script>
+    <title>E-commerce</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="product-container">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search products ..."
+          class="search-bar"
+        />
+        <div class="product-card-container">
+          <div id="product-cards"></div>
+          <hr />
+          <div class="product-footer">
+            <p>Dhanmondi | Register 1 | New Sale</p>
+            <div class="product-footer-btn">
+              <button>Options</button>
+              <button>New Sale</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="product-add-container">
+        <div class="product-add-title">
+          <p><i class="fa fa-user"></i>&nbsp;Add Customer</p>
+        </div>
+        <div class="product-add-card">
+          <div id="my-product"></div>
+          <br /><br /><br /><br /><br />
+          <div class="product-add-account">
+            <p>Discount</p>
+            <p>BDT0.00</p>
+          </div>
+          <div class="product-add-account">
+            <p>Subtotal</p>
+            <p id="sub-total-price">BDT0.00</p>
+          </div>
+          <div class="product-add-account">
+            <p>Tax(0%)</p>
+            <p>BDT0</p>
+          </div>
+          <div class="product-add-account">
+            <p>Total</p>
+            <p id="total-price">BDT0.00</p>
+          </div>
+          <div class="product-add-account-PAY">
+            <p>PAY</p>
+            <p id="pay-price">BDT0.00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    //Product name container
+    var pcs = document.getElementById("product-cards");
+    var mp = document.getElementById("my-product");
+    var stp = document.querySelector("#sub-total-price");
+    var tp = document.querySelector("#total-price");
+    var pp = document.querySelector("#pay-price");
+    var items = [];
+
+    for (let i = 0; i < data.length; i++) {
+      var div_card = document.createElement("div");
+      div_card.className = "card";
+
+      let pci = "./images/" + data[i].image;
+      var imagem = document.createElement("img");
+      imagem.src = pci;
+      imagem.className = "img_style";
+      div_card.appendChild(imagem);
+      var imgp = document.createElement("p");
+      var str = data[i].name.substr(0, 7);
+      imgp.innerText = str + " ...";
+      imgp.className = "p_style";
+      div_card.appendChild(imgp);
+      pcs.appendChild(div_card);
+
+      //Amount, total price and quantity of products
+      div_card.onclick = () => {
+        if (items.length === 0) {
+          items.push({ key: i, quant: 1 });
+        } else {
+          var bool = 0;
+          var track = 0;
+
+          for (let j = 0; j < items.length; j++) {
+            if (i === items[j].key) {
+              bool = 1;
+              track = j;
+              break;
+            } else {
+              bool = 0;
+            }
+          }
+          if (bool === 1) {
+            items[track].quant = items[track].quant + 1;
+          } else {
+            items.push({ key: i, quant: 1 });
+          }
+        }
+        dataShow();
+        // console.log(items);
+      };
+    }
+
+    const dataShow = () => {
+      mp.innerHTML = "";
+      var sum = 0;
+
+      for (let j = 0; j < items.length; j++) {
+        var p_item = document.createElement("div");
+        p_item.className = "items-div";
+        var p_span_div = document.createElement("div");
+        var p_img_src = "./images/" + data[items[j].key].image;
+        var p_img = document.createElement("img");
+        p_img.className = "items-image";
+        p_img.src = p_img_src;
+        p_span_div.appendChild(p_img);
+        var p_span = document.createElement("span");
+        p_span.className = "items-span";
+        p_span.innerText = items[j].quant;
+        p_span_div.appendChild(p_span);
+        p_item.appendChild(p_span_div);
+        var p_name = document.createElement("p");
+        p_name.innerText = data[items[j].key].name.substr(0, 30) + " ...";
+        p_item.appendChild(p_name);
+        var p_price = document.createElement("p");
+        p_price.innerText = "BDT" + data[items[j].key].price;
+        p_item.appendChild(p_price);
+        var p_del = document.createElement("i");
+        p_del.className = "fa fa-trash";
+        p_item.appendChild(p_del);
+        mp.appendChild(p_item);
+
+        //sum of total price
+        sum = sum + data[items[j].key].price * items[j].quant;
+        stp.innerText = "BDT" + sum;
+        tp.innerText = "BDT" + sum;
+        pp.innerText = "BDT" + sum;
+
+        p_del.onclick = () => {
+          items.splice(j, 1);
+          return dataShow();
+        };
+      }
+    };
+  </script>
+</html>
